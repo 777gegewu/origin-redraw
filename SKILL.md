@@ -77,6 +77,8 @@ For detailed chart rules, read `references/chart-type-rules.md`.
 - Do not use Origin default styling as final output unless the user explicitly accepts it.
 - Chinese-submission graph defaults: keep four-side borders, use inward ticks only on bottom and left axes, and remove top/right ticks.
 - Axis titles default to worksheet Long Name substitution only when no graph theme is applied. When `theme` is set, let the theme's own axis-title expressions such as `%(?X)` and `%(?Y)` remain in control unless the task spec explicitly sets `axis_titles_from_long_name: true`.
+- For point-line figures, use an Origin line+symbol plot type through `figures[].plot`, then set per-curve symbols with `figures[].symbols` and optional `figures[].symbol_size`. Do not rely on a screenshot-only redraw where all points share the same symbol.
+- For line styles, prefer explicit `figures[].line_styles` when individual curves need specific solid/dashed patterns. Use `dashed_from` only as a simple shorthand for limit/reference curves.
 - Legend placement must be verified from exported PNG screenshots. If the legend overlaps data curves, first try moving only the legend (`legend_x`, `legend_y`) and keep the theme/text style intact. If reasonable legend-position attempts still fail, increase the Y-axis maximum (`axis.y.to`) as the fallback, then re-export PNG/EMF and re-check.
 - Saved graph themes from Origin Theme Organizer can be applied by name with `themeApply2g theme:="Theme Name"`. Use this only when the user provides the exact theme name or the task spec contains `theme`.
 - Treat Origin COM as unstable: set a task-level timeout, keep logs, and preserve validated data tables before any automated run.

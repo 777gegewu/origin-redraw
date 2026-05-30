@@ -34,6 +34,10 @@ Minimal example:
       "legend_visible_only": true,
       "legend_update": "update",
       "legend_overlap_fallback": "increase_y_to",
+      "plot": 202,
+      "symbols": [1, 2, 3],
+      "symbol_size": 6,
+      "line_styles": [0, 0, 2],
       "axis_titles_from_long_name": true,
       "dashed_from": 4
     }
@@ -54,13 +58,17 @@ Fields:
 - `figures[].axis.x/y`: optional `from`, `to`, `inc`.
 - `figures[].axis_titles_from_long_name`: when `true`, uses Origin substitution such as `%(1X,@LA)` and `%(?Y,@LA)` so axis titles come from worksheet Long Name. If omitted, the default is `true` without a theme and `false` with a theme, so saved theme expressions such as `%(?X)` and `%(?Y)` are preserved.
 - `figures[].theme`: optional Origin Theme Organizer graph theme name. The script applies it with `themeApply2g theme:="..."`.
+- `figures[].plot`: optional Origin plot type for `plotxy`; default `200`. Common XY plot types are `200` for line, `201` for scatter, and `202` for line+symbol. Use `202` when each curve needs visible point symbols.
+- `figures[].symbols`: optional per-curve Origin symbol shape codes, applied with LabTalk `set -k`. Use distinct values for multi-curve point-line figures.
+- `figures[].symbol_size`: optional symbol size, applied with LabTalk `set -z`.
+- `figures[].line_styles`: optional per-curve line style codes, applied with LabTalk `set -d`. This overrides `dashed_from` for listed curves.
 - `figures[].legend`: optional boolean; default `true`. The script does not write fixed legend text. It asks Origin to create/update the legend after applying the theme, then runs `legendupdate`.
 - `figures[].legend_mode`: default `comment`; passed to Origin `legendupdate` so legend entries come from the worksheet Comments row, matching the usual Theme Organizer setting `@WU: Use Comment (1st line)`.
 - `figures[].legend_update`: default `update`; passed to Origin `legendupdate update:=...`. Use `reconstruct` only as a fallback when a theme's saved legend object still truncates entries.
 - `figures[].legend_visible_only`: default `true`; passed to Origin `legendupdate hide:=1` to match "show legend for visible plots only".
 - `figures[].legend_x/y/scale`: optional legend placement target and font size after update. The current generic script applies `legend_scale` but leaves position to Origin/theme by default; manual or follow-up visual adjustment should move the existing legend object without recreating blank text.
 - `figures[].legend_overlap_fallback`: default workflow note, usually `increase_y_to`. After PNG inspection, first move `legend_x/y`; if the legend still covers important curves after reasonable position attempts, increase `axis.y.to` to create headroom and regenerate PNG/EMF.
-- `figures[].dashed_from`: first plot index to render as dashed, useful for limits.
+- `figures[].dashed_from`: first plot index to render as dashed when `line_styles` is not provided, useful for limits.
 
 Visual QA workflow:
 

@@ -170,9 +170,10 @@ def figure_commands(
         )
     x_index = roles.index("X") + 1
     y_range = f"{min(y_indices)}:{max(y_indices)}"
+    plot_type = int(figure.get("plot", 200))
     commands.extend(
         [
-            f'plotxy iy:=({x_index},{y_range}) plot:=200 ogl:=[<new name:={graph}>];',
+            f'plotxy iy:=({x_index},{y_range}) plot:={plot_type} ogl:=[<new name:={graph}>];',
             f"win -a {graph};",
             "layer.unit=0;",
             "layer 76 68 13 15;",
@@ -240,9 +241,12 @@ def figure_commands(
         )
 
     colors = figure.get("colors", DEFAULT_COLORS)
+    symbols = figure.get("symbols", [])
+    symbol_size = figure.get("symbol_size")
+    line_styles = figure.get("line_styles", [])
     dashed_from = int(figure.get("dashed_from", 4))
-    for plot_idx, color in enumerate(colors[: len(y_indices)], start=1):
-        r, g, b = color
+    for plot_idx in range(1, len(y_indices) + 1):
+        r, g, b = colors[(plot_idx - 1) % len(colors)]
         commands.extend(
             [
                 f"range p{plot_idx} = [{graph}]1!{plot_idx};",
@@ -250,8 +254,14 @@ def figure_commands(
                 f"set p{plot_idx} -w {figure.get('line_width', 1800)};",
             ]
         )
-        if plot_idx >= dashed_from:
+        if plot_idx <= len(line_styles):
+            commands.append(f"set p{plot_idx} -d {int(line_styles[plot_idx - 1])};")
+        elif plot_idx >= dashed_from:
             commands.append(f"set p{plot_idx} -d 2;")
+        if plot_idx <= len(symbols):
+            commands.append(f"set p{plot_idx} -k {int(symbols[plot_idx - 1])};")
+        if symbol_size is not None:
+            commands.append(f"set p{plot_idx} -z {float(symbol_size)};")
 
     for ext in export_types:
         commands.append(
