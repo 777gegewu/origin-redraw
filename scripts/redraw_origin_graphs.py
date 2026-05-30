@@ -240,6 +240,13 @@ def figure_commands(
             ]
         )
 
+    if figure.get("theme_controls_series", False):
+        for ext in export_types:
+            commands.append(
+                f'expGraph type:={ext} filename:="{labtalk_escape(project_name)}" path:="{origin_path(export_dir)}";'
+            )
+        return commands
+
     colors = figure.get("colors", DEFAULT_COLORS)
     origin_color_indices = figure.get("origin_color_indices", [])
     symbols = figure.get("symbols", [])

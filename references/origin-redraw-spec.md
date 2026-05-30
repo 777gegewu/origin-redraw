@@ -42,6 +42,7 @@ Minimal example:
       "origin_color_indices": [1, 2, 4],
       "line_styles": [0, 0, 2],
       "ungroup_plots": true,
+      "theme_controls_series": false,
       "axis_titles_from_long_name": true,
       "dashed_from": 4
     }
@@ -70,6 +71,7 @@ Fields:
 - `figures[].origin_color_indices`: optional per-curve Origin color-list indices. Prefer this for line+symbol plots when symbol fill must exactly match line color, because Origin's symbol fill commands are more reliable with color indices than with direct RGB values. If omitted, the script uses RGB values from `figures[].colors` or the default palette.
 - `figures[].line_styles`: optional per-curve line style codes, applied with LabTalk `set -d`. This overrides `dashed_from` for listed curves.
 - `figures[].ungroup_plots`: optional boolean; defaults to `true` when per-curve symbols, line styles, or Origin color indices are set. This prevents Origin group styling from overriding individual curve symbol colors.
+- `figures[].theme_controls_series`: optional boolean; default `false`. Set `true` when the Origin theme already defines the desired multi-curve colors, line styles, symbols, and symbol fill. In this mode the script applies the theme, adjusts axes/legend/export only, and skips per-curve `set p...` overrides.
 - `figures[].legend`: optional boolean; default `true`. The script does not write fixed legend text. It asks Origin to create/update the legend after applying the theme, then runs `legendupdate`.
 - `figures[].legend_mode`: default `comment`; passed to Origin `legendupdate` so legend entries come from the worksheet Comments row, matching the usual Theme Organizer setting `@WU: Use Comment (1st line)`.
 - `figures[].legend_update`: default `update`; passed to Origin `legendupdate update:=...`. Use `reconstruct` only as a fallback when a theme's saved legend object still truncates entries.
