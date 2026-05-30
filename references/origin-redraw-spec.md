@@ -37,7 +37,11 @@ Minimal example:
       "plot": 202,
       "symbols": [1, 2, 3],
       "symbol_size": 6,
+      "symbol_fill": 1,
+      "symbol_fill_follow_line": true,
+      "origin_color_indices": [1, 2, 4],
       "line_styles": [0, 0, 2],
+      "ungroup_plots": true,
       "axis_titles_from_long_name": true,
       "dashed_from": 4
     }
@@ -61,7 +65,11 @@ Fields:
 - `figures[].plot`: optional Origin plot type for `plotxy`; default `200`. Common XY plot types are `200` for line, `201` for scatter, and `202` for line+symbol. Use `202` when each curve needs visible point symbols.
 - `figures[].symbols`: optional per-curve Origin symbol shape codes, applied with LabTalk `set -k`. Use distinct values for multi-curve point-line figures.
 - `figures[].symbol_size`: optional symbol size, applied with LabTalk `set -z`.
+- `figures[].symbol_fill`: optional symbol interior code, applied with LabTalk `set -kf`. Use `1` for open symbols when a graph theme forces solid symbol fill to black; this keeps the visible symbol edge color aligned with the line color.
+- `figures[].symbol_fill_follow_line`: default `true`; after symbol shape/interior are set, the script reapplies line/symbol edge color with `set -c` and symbol fill color with `set -csf` so symbol color matches the line color.
+- `figures[].origin_color_indices`: optional per-curve Origin color-list indices. Prefer this for line+symbol plots when symbol fill must exactly match line color, because Origin's symbol fill commands are more reliable with color indices than with direct RGB values. If omitted, the script uses RGB values from `figures[].colors` or the default palette.
 - `figures[].line_styles`: optional per-curve line style codes, applied with LabTalk `set -d`. This overrides `dashed_from` for listed curves.
+- `figures[].ungroup_plots`: optional boolean; defaults to `true` when per-curve symbols, line styles, or Origin color indices are set. This prevents Origin group styling from overriding individual curve symbol colors.
 - `figures[].legend`: optional boolean; default `true`. The script does not write fixed legend text. It asks Origin to create/update the legend after applying the theme, then runs `legendupdate`.
 - `figures[].legend_mode`: default `comment`; passed to Origin `legendupdate` so legend entries come from the worksheet Comments row, matching the usual Theme Organizer setting `@WU: Use Comment (1st line)`.
 - `figures[].legend_update`: default `update`; passed to Origin `legendupdate update:=...`. Use `reconstruct` only as a fallback when a theme's saved legend object still truncates entries.

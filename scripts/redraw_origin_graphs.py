@@ -241,16 +241,24 @@ def figure_commands(
         )
 
     colors = figure.get("colors", DEFAULT_COLORS)
+    origin_color_indices = figure.get("origin_color_indices", [])
     symbols = figure.get("symbols", [])
     symbol_size = figure.get("symbol_size")
+    symbol_fill = int(figure.get("symbol_fill", 0))
+    symbol_fill_follow_line = bool(figure.get("symbol_fill_follow_line", True))
     line_styles = figure.get("line_styles", [])
     dashed_from = int(figure.get("dashed_from", 4))
+    if figure.get("ungroup_plots", bool(symbols or line_styles or origin_color_indices)):
+        commands.append("layer -gu;")
     for plot_idx in range(1, len(y_indices) + 1):
         r, g, b = colors[(plot_idx - 1) % len(colors)]
+        if origin_color_indices:
+            color_value = str(int(origin_color_indices[(plot_idx - 1) % len(origin_color_indices)]))
+        else:
+            color_value = f"color({r},{g},{b})"
         commands.extend(
             [
                 f"range p{plot_idx} = [{graph}]1!{plot_idx};",
-                f"set p{plot_idx} -c color({r},{g},{b});",
                 f"set p{plot_idx} -w {figure.get('line_width', 1800)};",
             ]
         )
@@ -260,8 +268,13 @@ def figure_commands(
             commands.append(f"set p{plot_idx} -d 2;")
         if plot_idx <= len(symbols):
             commands.append(f"set p{plot_idx} -k {int(symbols[plot_idx - 1])};")
+            commands.append(f"set p{plot_idx} -kf {symbol_fill};")
         if symbol_size is not None:
             commands.append(f"set p{plot_idx} -z {float(symbol_size)};")
+        commands.append(f"set p{plot_idx} -c {color_value};")
+        if plot_idx <= len(symbols) and symbol_fill_follow_line:
+            commands.append(f"set p{plot_idx} -cse {color_value};")
+            commands.append(f"set p{plot_idx} -csf {color_value};")
 
     for ext in export_types:
         commands.append(
