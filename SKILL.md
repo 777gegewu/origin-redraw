@@ -72,6 +72,11 @@ For detailed chart rules, read `references/chart-type-rules.md`.
 
 ## Origin Automation Constraints
 
+- This skill bundles required Origin graph themes under `assets/origin-themes/`. Before using a named theme on a new machine or another agent session, install bundled themes with:
+  ```powershell
+  python %CODEX_HOME%\skills\origin-redraw\scripts\install_origin_theme.py
+  ```
+  Read `references/origin-theme-assets.md` for theme inventory and install details.
 - Apply the project or workspace theme when available; if unavailable, reproduce the equivalent font, line width, color, and axis style manually.
 - Chinese text should use Songti; English text and acronyms should use Times New Roman where journal-style output is required.
 - Do not use Origin default styling as final output unless the user explicitly accepts it.
